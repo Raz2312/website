@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="profile-page">
+    <!-- Left Sidebar -->
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="cover-photo"></div>
+                <div class="profile-info">
+                    <div class="avatar-container">
+                        <img src="{{ url_for('static', filename=user.profile_pic or 'default_profile_picture.jpg') }}" 
+                            alt="Profile picture" class="avatar">
+                    </div>
+                    <h1 class="user-name">{{ user.first_name }} {{ user.last_name }}</h1>
+                </div>
+            </div>
+            
+            <!-- Profile Content -->
+            <div class="profile-content">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>About Me</h2>
+                    </div>
+                    <div class="bio-section">
+                        <!-- Bio display view -->
+                        <div class="bio-content" id="bio-display">
+                            {% if user.Bio %}
+                                <p>{{ user.Bio.replace(',', '<br>') | safe }}</p>
+                            {% else %}
+                                <p class="empty-bio">This user has not added a bio yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Global Styles */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .profile-page {
+        display: flex;
+        min-height: 100vh;
+        background-color: #f5f7fa;
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+        width: 320px;
+        background-color: #ffffff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        position: relative; 
+        height: auto;
+        min-height: 100vh;
+        overflow-y: visible;
+        z-index: 10;
+    }
+    
+    .sidebar-header {
+        padding: 25px 20px;
+        border-bottom: 1px solid #eaedf0;
+    }
+    
+    .sidebar-header h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .items-grid {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .item-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .item-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .item-card a {
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .item-image {
+        height: 180px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .item-card:hover .item-image img {
+        transform: scale(1.08);
+    }
+    
+    .item-price {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(44, 62, 80, 0.85);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .item-details {
+        padding: 15px;
+    }
+    
+    .item-details h4 {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #2c3e50;
+    }
+    
+    .item-year {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+    
+    .empty-collection {
+        text-align: center;
+        padding: 40px 20px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .empty-icon {
+        font-size: 48px;
+        color: #bdc3c7;
+        margin-bottom: 15px;
+    }
+    
+    .empty-collection h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+    
+    .empty-collection p {
+        color: #7f8c8d;
+        margin-bottom: 20px;
+    }
+    
+    .browse-button {
+        display: inline-block;
+        background: #3498db;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background 0.3s ease;
+    }
+    
+    .browse-button:hover {
+        background: #2980b9;
+    }
+    
+    /* Main Content Styles */
+    .main-content {
+        flex: 1;
+        margin-left: 0;
+        padding: 30px;
+    }
+    
+    .profile-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    /* Profile Header */
+    .profile-header {
+        position: relative;
+        margin-bottom: 30px;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .cover-photo {
+        height: 200px;
+        background: linear-gradient(135deg, #3498db, #8e44ad);
+    }
+    
+    .profile-info {
+        position: relative;
+        padding: 0 30px 30px;
+        text-align: center;
+    }
+    
+    .avatar-container {
+        position: relative;
+        margin-top: -75px;
+        display: inline-block;
+    }
+    
+    .avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .user-name {
+        margin-top: 15px;
+        font-size: 28px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    /* Profile Content */
+    .profile-content {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .content-section {
+        padding: 30px;
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eaedf0;
+    }
+    
+    .section-header h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .bio-section {
+        position: relative;
+    }
+    
+    .bio-content {
+        line-height: 1.6;
+        color: #34495e;
+    }
+    
+    .empty-bio {
+        color: #95a5a6;
+        font-style: italic;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .sidebar {
+            width: 280px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .profile-page {
+            flex-direction: column;
+        }
+        
+        .sidebar {
+            width: 100%;
+            min-height: auto;
+            max-height: none;
+            overflow-y: visible;
+        }
+        
+        .main-content {
+            width: 100%;
+        }
+        
+        .cover-photo {
+            height: 150px;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .profile-info {
+            padding: 0 20px 20px;
+        }
+        
+        .avatar-container {
+            margin-top: -60px;
+        }
+        
+        .user-name {
+            font-size: 24px;
+        }
+        
+        .content-section {
+            padding: 20px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .profile-page {
+            padding: 0;
+        }
+        
+        .main-content {
+            padding: 15px;
+        }
+    }
+</style>
+
+<p>Current Profile Pic: {{ user.profile_pic }}</p>
+{% endblock %}

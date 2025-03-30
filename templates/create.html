@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Create Item
+{% endblock %}
+<head>
+    <!-- Ensure to include your CSS file correctly -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    create your item
+</head>
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="image-container">
+                <div class="image-wrapper">
+                    <form method="POST" enctype="multipart/form-data">
+                        <input type="text" 
+                               class="item-name" 
+                               id="name" 
+                               name="name" 
+                               placeholder="Item Name" 
+                               required>
+                               
+                               <div class="image-upload-wrapper">
+                                <input type="file" 
+                                       id="product_picture" 
+                                       name="product_picture" 
+                                       accept="image/*"
+                                       onchange="previewImage(this)"
+                                       style="display: none;">
+                                <div id="imagePreview" 
+                                     class="empty-image-space"
+                                     onclick="document.getElementById('product_picture').click();">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Click to upload image</p>
+                                </div>
+                            </div>
+                            
+                            <p class="year-price">
+                                Date: <input type="text" 
+                                id="year" 
+                                name="year" 
+                                placeholder="Enter year" 
+                                required>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 sidebar">
+                    <div class="sidebar-content">
+                        <p class="year-price">
+                            <input type="text" 
+                            id="price" 
+                            name="price" 
+                            placeholder="Price ₪" 
+                            step="0.01" 
+                            required>
+                        </p>
+                        
+                        <p class="description">
+                            <textarea id="other" 
+                            name="other" 
+                            placeholder="Description" 
+                            required></textarea>
+                        </p>
+                        
+                        <p class="condition">
+                            Condition: 
+                            <select id="condition" 
+                            name="condition" 
+                            required 
+                            class="condition-select">
+                            <option value="" disabled selected>Select condition...</option>
+                            <option value="Brand new">Brand new</option>
+                            <option value="Used">Used</option>
+                            <option value="Damaged">Damaged</option>
+                        </select>
+                        </p>
+                        
+                        <!-- Moved the address input here -->
+                        <input type="text" id="addressInput" name="address" placeholder="Enter address" class="address-input" required>
+                        <ul id="suggestions"></ul>
+
+                        <div class="button-container">
+                            <button type="submit" class="button-30">Create Item</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+<div class="api-response">
+    {% if api_response %}
+        <p>{{ api_response }}</p>
+    {% endif %}
+</div>
+</div>
+
+<style>
+    .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 2rem;
+    }
+
+    .image-wrapper {
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 3rem;
+        background-color: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .image-wrapper:hover {
+        transform: translateY(-5px);
+    }
+
+    .image-wrapper img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .sidebar {
+        background-color: #ffffff;
+        min-height: 1000px;
+        padding: 3rem 2rem;
+        border-left: 2px solid #eaeaea;
+        border-right: 2px solid #eaeaea;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 400px;
+    }
+
+    .sidebar-content {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        margin-top: 210px;
+    }
+
+    .year-price, .description, .condition, .address-input {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        text-align: left;
+    }
+
+    .address-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .item-name {
+        font-size: clamp(40px, 6vw, 80px);
+        font-family: 'Arial';
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-align: right;
+        color: #2d3436;
+        line-height: 1.2;
+        width: 100%;
+        border: none;
+        background: transparent;
+    }
+
+    .year-price {
+        font-size: 25px;
+        font-family: 'Arial', sans-serif;
+        margin-top: 1.5rem;
+        text-align: left;
+        color: #7d8486;
+        font-weight: 600;
+
+    }
+
+    .year-price input {
+        font-size: 25px;
+        border: none;
+        background: transparent;
+        color: #7d8486;
+        width: 120px;
+        text-align: left;
+    }
+
+    .description, .condition {
+        font-size: 18px;
+        font-family: 'system-ui', -apple-system, BlinkMacSystemFont;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        word-wrap: break-word;
+        text-align: left;
+        margin-bottom: 1rem;
+        color: #2d3436;
+        border: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .description textarea {
+        width: 100%;
+        min-height: 100px;
+        border: none;
+        background: transparent;
+        resize: vertical;
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+    }
+
+    .condition input {
+        border: none;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+        width: 70%;
+        text-align: left;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .button-30 {
+        align-items: center;
+        appearance: none;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border: 2px solid #a6aaac;
+        box-sizing: border-box;
+        color: #2d3436;
+        cursor: pointer;
+        display: inline-flex;
+        font-family: "system-ui", -apple-system, BlinkMacSystemFont;
+        font-weight: 600;
+        height: 48px;
+        justify-content: center;
+        line-height: 1;
+        padding: 0 24px;
+        position: relative;
+        text-decoration: none;
+        transition: all .3s ease;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        font-size: 16px;
+    }
+
+    .button-30:hover {
+        background-color: #2d3436;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .file-input-wrapper {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    input:focus, textarea:focus {
+        outline: none;
+    }
+
+    /* Make the container full-height */
+    .container-fluid {
+        min-height: 100vh;
+    }
+
+    /* Add some responsive padding */
+    @media (max-width: 768px) {
+        .sidebar {
+            padding: 2rem 1rem;
+        }
+        
+        .image-wrapper {
+            padding: 1.5rem;
+        }
+    }
+
+    .condition-select {
+        border: none;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+        width: 70%;
+        text-align: left;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        cursor: pointer;
+        padding-right: 20px;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right center;
+        background-size: 1em;
+    }
+
+    .condition-select:focus {
+        outline: none;
+    }
+
+    .condition-select option {
+        background: #ffffff;
+        color: #000000;
+        padding: 10px;
+        border-radius: 100px;
+    }
+
+    .empty-image-space {
+        width: 100%;
+        height: 400px;
+        border: 2px dashed #e0e0e0;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .empty-image-space:hover {
+        border-color: #2d3436;
+        background-color: #f1f3f4;
+    }
+
+    .empty-image-space i {
+        font-size: 48px;
+        color: #a6aaac;
+        margin-bottom: 10px;
+    }
+
+    .empty-image-space p {
+        color: #a6aaac;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    #suggestions {
+        list-style-type: none; /* Remove bullet points */
+        padding: 0; /* Remove padding */
+        margin: 0; /* Remove margin */
+        border: 1px solid #ccc; /* Add border */
+        border-radius: 4px; /* Rounded corners */
+        max-height: 150px; /* Limit height */
+        overflow-y: auto; /* Scroll if too many suggestions */
+    }
+    #suggestions li {
+        padding: 10px; /* Add padding to list items */
+        cursor: pointer; /* Change cursor on hover */
+        border-bottom: 1px solid #e0e0e0; /* Add a line between suggestions */
+    }
+    #suggestions li:last-child {
+        border-bottom: none; /* Remove the line for the last item */
+    }
+    #suggestions li:hover {
+        background-color: #f0f0f0; /* Highlight on hover */
+    }
+</style>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var imagePreview = document.getElementById('imagePreview');
+            imagePreview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
+            imagePreview.classList.add('has-image');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+
+<body>
+    <!-- Transfer the search box here -->
+    <input type="text" id="addressInput" placeholder="Enter address" class="address-input" required>
+    <ul id="suggestions"></ul>
+
+    <script>
+        const addressInput = document.getElementById('addressInput');
+        const suggestionsList = document.getElementById('suggestions');
+
+        addressInput.addEventListener('input', async () => {
+            const inputText = addressInput.value;
+
+            // Clear previous suggestions
+            suggestionsList.innerHTML = '';
+
+            if (inputText.length > 2) { // Start suggesting after 2 characters
+                try {
+                    const response = await fetch(`/autocomplete?input=${encodeURIComponent(inputText)}`); // Ensure input is encoded
+                    const data = await response.json();
+
+                    data.predictions.forEach(prediction => {    
+                        const li = document.createElement('li');
+                        li.textContent = prediction.description;
+                        li.addEventListener('click', () => {
+                            addressInput.value = prediction.description;
+                            suggestionsList.innerHTML = ''; // Clear suggestions after selection
+                        });
+                        suggestionsList.appendChild(li);
+                    });
+                } catch (error) {
+                    console.error('Error fetching suggestions:', error);
+                }
+            }
+        });
+    </script>
+    <!-- Ensure to include any necessary CSS for styling the search box -->
+    <style>
+        #addressInput {
+            width: 200px; /* Set width of the input */
+            padding: 10px; /* Add padding */
+            border: 1px solid #ccc; /* Add border */
+            border-radius: 4px; /* Rounded corners */
+            margin-bottom: 10px; /* Space below the input */
+        }
+        #suggestions {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0; /* Remove padding */
+            margin: 0; /* Remove margin */
+            border: 1px solid #ccc; /* Add border */
+            border-radius: 4px; /* Rounded corners */
+            max-height: 150px; /* Limit height */
+            overflow-y: auto; /* Scroll if too many suggestions */
+        }
+        #suggestions li {
+            padding: 10px; /* Add padding to list items */
+            cursor: pointer; /* Change cursor on hover */
+            border-bottom: 1px solid #e0e0e0; /* Add a line between suggestions */
+        }
+        #suggestions li:last-child {
+            border-bottom: none; /* Remove the line for the last item */
+        }
+        #suggestions li:hover {
+            background-color: #f0f0f0; /* Highlight on hover */
+        }
+    </style>
+</body>
+{% endblock %}

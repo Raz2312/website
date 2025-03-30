@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3 sidebar">
+            <div class="sidebar-content">
+                <!-- Sidebar content completely removed -->
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Latest Items</h2>
+                <div class="d-flex align-items-center">
+                    <span class="me-2 text-muted item-count" style="margin-right: 20px;">{{ items|length }} items</span>
+                    <button id="viewToggle" class="btn btn-outline-primary">
+                        <i class="fa fa-th-list"></i> Toggle View
+                    </button>
+                </div>
+            </div>
+
+            {% if items %}
+                <div id="itemsContainer" class="row grid-view" >
+                    {% for item in items %}
+                        <div class="item-wrapper col-md-4" style="margin-bottom: 24px;">
+                            <a href="{{ url_for('pages.BigItem', item_id=item.id, owner_id=item.owner_id) }}" class="card-link">
+                                <div class="card mb-4">
+                                    <div class="img-wrapper">
+                                        <img src="{{ url_for('static', filename=item.product_picture) }}" 
+                                             class="card-img-top" 
+                                             alt="Item Image">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title item-name">{{ item.name }}</h5>
+                                        <p class="year-text">{{ item.year }} • {{ item.condition }}</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="price">₪{{ item.price }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if button %}
+                    <div class="text-center mt-3 mb-5">
+                        <a href="{{ url_for('list.mylist') }}" class="btn btn-primary px-4 py-2">View My List</a>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-state text-center py-5">
+                    <i class="fa fa-box-open fa-4x text-muted mb-3"></i>
+                    <p class="lead">No items available at the moment.</p>
+                    <p class="text-muted">Check back later or adjust your filters.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* General Styles */
+    body {
+        background-color: #f9f9f9;
+    }
+    
+    .container-fluid {
+        padding: 0 30px;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        background-color: #ffffff;
+        min-height: calc(100vh - 56px);
+        padding: 25px;
+        border-right: 1px solid #eaeaea;
+        box-shadow: 0 0 20px rgba(0,0,0,0.03);
+    }
+
+    .sidebar-content {
+        position: sticky;
+        top: 20px;
+    }
+    
+    .filter-options .list-group-item {
+        cursor: pointer;
+        border-left: 3px solid transparent;
+        transition: all 0.2s;
+    }
+    
+    .filter-options .list-group-item:hover {
+        border-left: 3px solid #007bff;
+        background-color: #f8f9fa;
+    }
+
+    /* Card Styles */
+    .img-wrapper {
+        padding: 15px 15px 0 15px;
+        position: relative;
+    }
+
+    .card-img-top {
+        height: 220px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .card {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .card-link:hover .card {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .card-body {
+        text-align: left;
+        padding: 16px;
+        background-color: white;
+    }
+
+    .item-name {
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 6px;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .price {
+        color: #1c1c1c;
+        font-weight: 700;
+        font-size: 22px;
+    }
+
+    .year-text {
+        color: #777;
+        font-weight: 500;
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+    
+    .view-details {
+        opacity: 0;
+        transition: all 0.3s;
+    }
+    
+    .card:hover .view-details {
+        opacity: 1;
+    }
+
+    /* View Toggle Styles */
+    .item-count {
+        font-size: 14px;
+    }
+
+    /* Grid View (default) */
+    .grid-view .item-wrapper {
+        width: 33.333%;
+    }
+
+    /* List View Styles */
+    .list-view .item-wrapper {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .list-view .card {
+        flex-direction: row;
+        align-items: center;
+        padding: 10px;
+        max-width: 100%;
+    }
+
+    .list-view .img-wrapper {
+        width: 140px;
+        height: 120px;
+        margin-right: 20px;
+        padding: 0;
+        flex-shrink: 0;
+    }
+
+    .list-view .card-img-top {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .list-view .card-body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0 20px;
+    }
+    
+    .list-view .item-details {
+        flex-grow: 1;
+    }
+
+    .list-view .item-name {
+        margin: 0;
+        font-size: 18px;
+    }
+    
+    .list-view .year-text {
+        margin-top: 5px;
+        margin-bottom: 0;
+    }
+
+    .list-view .price {
+        font-size: 20px;
+        font-weight: 700;
+        margin-right: 20px;
+    }
+    
+    .list-view .view-details {
+        opacity: 1;
+        margin-left: auto;
+    }
+
+    /* Make items stack in list view */
+    .list-view.row {
+        flex-direction: column;
+    }
+
+    .list-view .col-md-4 {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    
+    /* Empty state styling */
+    .empty-state {
+        background-color: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .grid-view .item-wrapper {
+            width: 50%;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .grid-view .item-wrapper {
+            width: 100%;
+        }
+        
+        .container-fluid {
+            padding: 0 15px;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const viewToggle = document.getElementById('viewToggle');
+    const itemsContainer = document.getElementById('itemsContainer');
+    
+    // Initial icon based on current view
+    updateToggleIcon();
+    
+    viewToggle.addEventListener('click', function() {
+        itemsContainer.classList.toggle('grid-view');
+        itemsContainer.classList.toggle('list-view');
+        
+        // Update the toggle button icon
+        updateToggleIcon();
+        
+        // Save the current view preference
+        const isListView = itemsContainer.classList.contains('list-view');
+        localStorage.setItem('preferredView', isListView ? 'list' : 'grid');
+    });
+    
+    // Load saved preference
+    const savedView = localStorage.getItem('preferredView');
+    if (savedView === 'list') {
+        itemsContainer.classList.remove('grid-view');
+        itemsContainer.classList.add('list-view');
+        updateToggleIcon();
+    }
+    
+    function updateToggleIcon() {
+        const isListView = itemsContainer.classList.contains('list-view');
+        if (isListView) {
+            viewToggle.innerHTML = '<i class="fa fa-th"></i> Grid View';
+        } else {
+            viewToggle.innerHTML = '<i class="fa fa-list"></i> List View';
+        }
+    }
+    
+    // For demonstration - price range slider
+    const priceRange = document.getElementById('priceRange');
+    if (priceRange) {
+        priceRange.addEventListener('input', function() {
+            // You can implement filtering logic here
+            console.log('Price range:', this.value);
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,314 @@
+{% extends "base.html" %} 
+{% block title %}Big Item{% endblock %} 
+{% block content %}
+<head>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtcWj6Uog3a16LgoF9NeXe_A951igbzsc&callback=initMiniMap" async defer></script>
+    <!-- Replace YOUR_API_KEY with your actual Google Maps API key -->
+</head>
+<style>
+    .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 2rem;
+    }
+
+    .image-wrapper {
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 3rem;
+        background-color: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-wrapper:hover {
+        transform: translateY(-5px);
+    }
+
+    .image-wrapper img {
+        width: 500px;         /* Fixed width */
+        height: 500px;        /* Fixed height */
+        object-fit: contain;  /* Maintains aspect ratio within fixed dimensions */
+        border-radius: 8px;
+        background-color: #f8f9fa; /* Light background for images smaller than container */
+    }
+
+    .sidebar {
+        background-color: #ffffff;
+        min-height: 1000px;
+        padding: 3rem 2rem;
+        border-left: 2px solid #eaeaea;
+        border-right: 2px   solid #eaeaea;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .sidebar-content {
+        padding-right: 1rem;
+    }
+
+    .item-name {
+        font-size: clamp(40px, 6vw, 80px);
+        font-family: 'Arial';
+        font-weight: 700;
+        margin-bottom: 2rem;
+        text-align: left;
+        color: #2d3436;
+        line-height: 1.2;
+    }
+
+    .year-price {
+        font-size: 25px;
+        font-family: 'Arial', sans-serif;
+        margin-top: 1.5rem;
+        text-align: left;
+        color: #7d8486;
+        font-weight: 600;
+    }
+
+    .description, .condition, .id {
+        font-size: 18px;
+        font-family: 'system-ui', -apple-system, BlinkMacSystemFont;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        word-wrap: break-word;
+        text-align: left;
+        margin-bottom: 1rem;
+        color: #2d3436;
+        border: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .button-container {
+        text-align: left;
+        margin-top: 2rem;
+    }
+
+    .button-30:active {
+        transform: translateY(0);
+    }
+
+    /* Add a subtle background color to the whole page */
+    body {
+        background-color: #f8f9fa;
+    }
+
+    /* Make the container full-height */
+    .container-fluid {
+        min-height: 100vh;
+    }
+
+    /* Add some responsive padding */
+    @media (max-width: 768px) {
+        .sidebar {
+            padding: 2rem 1rem;
+        }
+        
+        .image-wrapper {
+            padding: 1.5rem;
+        }
+        .image-wrapper img {
+            width: 100%;      /* Full width on mobile */
+            height: 400px;    /* Smaller height on mobile */
+        }
+    }
+
+    .profile-picture-mini {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .user-name {
+        font-size: 20px;
+        color: #2d3436;
+        font-weight: 500;
+        font-family: 'Segoe UI';
+    }
+    .seller-info{
+        font-size: 20px;
+        color: #2d3436;
+        font-weight: 500;
+        font-family: 'Segoe UI';
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    /* New seller card styles */
+    .seller-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border: 1px solid #f0f0f0;
+    }
+
+    .seller-card-title {
+        font-size: 18px;
+        color: #2d3436;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 0.5rem;
+    }
+
+    .seller-profile {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .profile-picture {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #f8f9fa;
+    }
+
+    .seller-details {
+        margin-left: 1rem;
+    }
+
+    .seller-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2d3436;
+        text-decoration: none;
+        display: block;
+        margin-bottom: 0.2rem;
+        text-align: left;
+    }
+
+    .seller-joined {
+        font-size: 14px;
+        color: #7d8486;
+        margin: 0;
+    }
+
+    .view-profile-btn {
+        display: block;
+        text-align: center;
+        background-color: #f8f9fa;
+        color: #2d3436;
+        padding: 0.7rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        margin-top: 0.5rem;
+    }
+
+    .view-profile-btn:hover {
+        background-color: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+    /* Mini map styles */
+    #mini-map {
+        height: 300px; /* Set height for the mini map */
+        width: 100%;   /* Full width */
+        margin-top: 2rem; /* Space above the mini map */
+        border-radius: 5px;
+    }
+
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main content with image -->
+        <div class="col-md-9">
+            <div class="image-container">
+                <div class="image-wrapper">
+                    <h1 class="item-name">{{ item.name }}</h1>  
+                    <img src="{{ url_for('static', filename=item.product_picture) }}">
+                    <p class="year-price">Year: {{ item.year }}<br>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right sidebar with details -->
+        <div class="col-md-3 sidebar">
+            <div class="sidebar-content">
+                <p class="year-price">{{  item.price }}₪</p>
+                <p class="description">{{ item.other }}</p> 
+                <p class="condition">Condition: {{ item.condition }}</p>
+                
+                {% if current_user.id == user.id %}
+                <!-- Add Delete Button -->
+                <form method="POST" action="{{ url_for('item_funcs.delete', item_id=item.item_id) }}">
+                    <button type="submit" class="button-delete">Delete Item</button>
+                </form>
+                {% endif %}
+                
+                <!-- Mini Map Container -->
+                <div id="mini-map"></div>
+
+                <!-- Move the seller card below the mini map -->
+                <div class="seller-card">
+                    <h3 class="seller-card-title">Seller</h3>
+                    <div class="seller-profile">
+                        {% if current_user.profile_pic %}
+                        <img src="{{ url_for('static', filename=user.profile_pic) }}" class="profile-picture" alt="Profile picture">
+                        {% else %}
+                        <img src="{{ url_for('static', filename='avatar.jpg') }}" class="profile-picture" alt="Profile picture">
+                        {% endif %}
+                        <div class="seller-details">
+                        </div>
+                        {{ user.user_name }}                    
+                    </div>
+                    {% if current_user.id == user.id %}
+                    <a href="{{ url_for('profile', user_id=user.id) }}" class="view-profile-btn">View Profile</a>
+                    {% else %}
+                    <a href="{{ url_for('profilefinder', user_id=user.id) }}" class="view-profile-btn">View Profile</a>
+                    {% endif %}
+                </div>
+
+                <div class="button-container" style="margin-top: 2rem;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function initMiniMap() {
+        const miniMap = new google.maps.Map(document.getElementById("mini-map"), {
+            center: { lat: 31.4117, lng: 35.0818 }, // Set to your desired location
+            zoom: 10, // Adjust zoom level for mini map
+        });
+
+        // Update marker position to use item's address
+        const itemAddress = "{{ item.address }}"; // Assuming item.address contains the address
+        const geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ 'address': itemAddress }, function(results, status) {
+            if (status === 'OK') {
+                miniMap.setCenter(results[0].geometry.location);
+                const marker = new google.maps.Marker({
+                    position: results[0].geometry.location,
+                    map: miniMap,
+                    title: "{{ item.name }}", // Title for the marker
+                });
+            } else {
+                console.error('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    }
+
+    // Load the mini map after the main map script is loaded
+    window.onload = function() {
+        initMiniMap();
+    };
+</script>
+
+{% endblock %}

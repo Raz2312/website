@@ -1,0 +1,108 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
+  content %}
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow signup-card">
+          <div class="card-body">
+            <h3 class="top-text mb-4">Sign Up</h3>
+            <form method="POST">
+              <div class="row">
+                <div class="col-md-6 above-box-text">
+                  <label for="firstName" class="form-label">First Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="firstName"
+                    name="firstName"
+                    placeholder="Enter first name"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="LastName" class="form-label">Last Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="LastName"
+                    name="LastName"
+                    placeholder="Enter last name"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="user_name" class="form-label">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="user_name"
+                  name="user_name"
+                  placeholder="Choose a username"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="Enter email"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="password1" class="form-label">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password1"
+                  name="password1"
+                  placeholder="Enter password"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="password2" class="form-label">Confirm Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password2"
+                  name="password2"
+                  placeholder="Confirm password"
+                  required
+                />
+              </div>
+              <div style="text-align: center; margin-bottom: 20px; font-weight: 500;">Have an account? <a href="/login">Login</a></div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn login-sigup-button w-100" >Sign Up</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+
+
+        .signup-card {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            box-shadow: 0 0 2000px rgba(217, 23, 13, 0.1);
+        }
+        
+        .card-body {
+            padding: 32px;
+        }
+
+  </style>
+{% endblock %}

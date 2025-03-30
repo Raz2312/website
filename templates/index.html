@@ -1,0 +1,224 @@
+{% extends "base.html" %} {% block title %}Home Page{% endblock %} {% block content
+  %}
+  <style>
+    /* Modern color palette */
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --secondary: #64748b;
+        --accent: #f97316;
+        --background: #ffffff;
+        --text: #0f172a;
+    }
+
+    .hero-section {
+        background: radial-gradient(circle at 30% 107%, #4f46e5 0%, #2563eb 45%, #1d4ed8 80%);
+        padding: 120px 0 160px;
+        margin-bottom: 80px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        width: 150%;
+        height: 100px;
+        background: var(--background);
+        bottom: -50px;
+        left: -25%;
+        border-radius: 50%;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        background: linear-gradient(to right, #fff, #e2e8f0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+        font-size: 1.4rem;
+        color: #e2e8f0;
+        margin-bottom: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .features-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        padding: 0 40px;
+        margin-bottom: 80px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .Card-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 15px;
+    }
+
+    .Card-second-text {
+        color: var(--secondary);
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .card-img-top {
+        height: 300px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    .button-30 {
+        background-color: var(--primary);
+        color: white;
+        padding: 16px 32px;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .button-30:hover {
+        background-color: var(--primary-dark);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+    }
+
+    .get-started-container {
+        background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+        padding: 60px;
+        border-radius: 24px;
+        text-align: center;
+        margin: 0 40px 80px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+
+
+
+
+
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .features-container {
+            padding: 0 20px;
+        }
+
+        .get-started-container {
+            padding: 40px 20px;
+            margin: 0 20px 60px;
+        }
+    }
+  </style>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+      <h1 class="hero-title">Welcome </h1>
+      <p class="hero-subtitle"></p>
+  </div>
+
+
+  <!-- Features Section -->
+  <div class="features-container">
+      <div class="card">
+          <div class="card-body">
+              <h5 class="Card-title">Easy Shopping</h5>
+              <p class="Card-second-text">Find exactly what you're looking for with our advanced search and filtering system</p>
+          </div>
+          <img src="{{ url_for('static', filename='shop.png') }}" class="card-img-top">
+      </div>
+
+      <div class="card">
+          <div class="card-body">
+              <h5 class="Card-title">Easy Selling</h5>
+              <p class="Card-second-text">List your items in minutes with our streamlined selling process</p>
+          </div>
+          <img src="{{ url_for('static', filename='sell3.png') }}" class="card-img-top">
+      </div>
+
+      <div class="card">
+          <div class="card-body">
+              <h5 class="Card-title">Locate</h5>
+              <p class="Card-second-text">Utilizing Google's powerful API, we enable users to easily locate items and services with precision and accuracy.</p>
+          </div>
+          <img src="{{ url_for('static', filename='google_2.jpg') }}" class="card-img-top">
+      </div>
+  </div>
+
+  <!-- Get Started Section -->
+  {% if not current_user.is_authenticated %}
+  <div class="get-started-container">
+      <h2 class="Card-title">Start Your Journey Today</h2>
+      <p class="Card-second-text">Join our community and discover amazing deals</p>
+      <div class="action-buttons">
+          <a href="/login" class="button-30">Login</a>
+          <a href="/sign-up" class="button-30">Create Account</a>
+      </div>
+  </div>
+  {% endif %}
+
+  {% if current_user.is_authenticated %}
+  <div class="get-started-container">
+      <h2 class="Card-title">Welcome Back!</h2>
+      <p class="Card-second-text">Ready to discover today's best deals?</p>
+      <div class="action-buttons">
+          <a href="/public" class="button-30">
+              Explore Marketplace
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="nav-icons" viewBox="0 0 16 16">
+                  <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.37 2.37 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0M1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5M4 15h3v-5H4zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1zm3 0h-2v3h2z"/>
+              </svg>
+          </a>
+      </div>
+  </div>
+  {% endif %}
+  {% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %} {% block title %}Login{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow signup-card">
+                <div class="card-body">
+                    <h3 class="top-text mb-4">Login</h3>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            placeholder="Enter email"
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            placeholder="Enter Password"
+                            />
+                        </div>
+                        <div style="text-align: center; margin-bottom: 20px; font-weight: 500;">
+                            Don't have an account? <a href="{{ url_for('auth.sign_up') }}">Sign up</a>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn login-sigup-button w-100">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="background-color: rgba(249, 245, 245, 0.829);">
+
+<style>
+        .signup-card {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            box-shadow: 0 0 2000px rgba(217, 23, 13, 0.1);
+        }
+        
+        .card-body {
+            padding: 32px;
+        }
+        
+
+        .mb-3 {
+            margin-top: 20px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+        }
+        
+        .form-control {
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+    </style>
+    {% endblock %}
